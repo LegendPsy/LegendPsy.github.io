@@ -44,17 +44,18 @@ button{font:inherit;color:inherit}
 
 /* ---------- кнопки-таблетки ---------- */
 .pill{--bg:var(--cream);--fg:var(--terra);display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:0 34px;border-radius:999px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);text-decoration:none;text-transform:uppercase;font-weight:500;font-size:clamp(17px,4.6vw,22px);letter-spacing:.02em;cursor:pointer;position:relative;
-  box-shadow:0 6px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent);transition:transform .45s var(--spring),box-shadow .45s var(--spring);-webkit-tap-highlight-color:transparent;user-select:none}
-.pill:hover{transform:translateY(-2px);box-shadow:0 8px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent)}
-.pill.is-press,.pill:active{transform:translateY(5px) scale(.97);box-shadow:0 1px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent);transition-duration:.08s}
-.pill--terra{--bg:var(--terra);--fg:var(--cream);border-color:var(--terra);box-shadow:0 6px 0 -1px var(--terra-deep)}
-.pill--terra.is-press,.pill--terra:active{box-shadow:0 1px 0 -1px var(--terra-deep)}
-.pill--ink{--bg:var(--ink);--fg:var(--cream);border-color:var(--ink);box-shadow:0 6px 0 -1px #000}
-.pill--ghost{--bg:transparent;--fg:currentColor;box-shadow:none;border-color:currentColor}
-.pill--ghost:active,.pill--ghost.is-press{box-shadow:none}
+  -webkit-tap-highlight-color:transparent;user-select:none}
+.pill--terra{--bg:var(--terra);--fg:var(--cream);border-color:var(--terra)}
+.pill--ink{--bg:var(--ink);--fg:var(--cream);border-color:var(--ink)}
+.pill--ghost{--bg:transparent;--fg:currentColor;border-color:currentColor}
 .pills{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:rip .6s ease-out forwards}
-.pill{overflow:hidden}
+/* ---------- единый отклик всех кнопок, без теней ----------
+   наведение: чуть подрастает; нажатие: сжимается, от пальца расходится волна; отпустили: пружинит обратно */
+.tap{overflow:hidden;isolation:isolate;box-shadow:none!important;-webkit-tap-highlight-color:transparent;transition:transform .45s var(--spring),background-color .3s,color .3s}
+.tap:not(.menu-btn):not(.x):not(.nav){position:relative}
+@media (hover:hover) and (pointer:fine){.tap:hover{transform:scale(1.03)}}
+.tap.is-press,.tap:active{transform:scale(.95);transition-duration:.1s}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:rip .6s ease-out forwards;z-index:-1}
 @keyframes rip{to{transform:scale(1);opacity:0}}
 
 /* ---------- цена ---------- */
@@ -96,8 +97,7 @@ button{font:inherit;color:inherit}
 }
 
 /* ---------- меню ---------- */
-.menu-btn{position:fixed;top:14px;right:14px;z-index:50;width:48px;height:48px;border-radius:50%;background:var(--ink);border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 3px 14px rgba(0,0,0,.18);transition:transform .45s var(--spring)}
-.menu-btn:active{transform:scale(.9)}
+.menu-btn{position:fixed;top:14px;right:14px;z-index:50;width:48px;height:48px;border-radius:50%;background:var(--ink);border:0;cursor:pointer;display:grid;place-items:center;}
 .menu-btn i{display:block;width:20px;height:1.8px;background:var(--cream);position:relative;transition:transform .4s var(--spring),background .2s}
 .menu-btn i::before,.menu-btn i::after{content:"";position:absolute;left:0;width:20px;height:1.8px;background:var(--cream);transition:transform .4s var(--spring)}
 .menu-btn i::before{top:-6px}.menu-btn i::after{top:6px}

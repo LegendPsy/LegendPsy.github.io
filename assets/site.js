@@ -35,8 +35,10 @@ $$('.acc__btn').forEach(b => {
   });
 });
 
-/* ---------- кнопки: нажатие ощущается ---------- */
-$$('.pill').forEach(p => {
+/* ---------- кнопки: один отклик для всех ---------- */
+const TAP = '.pill, .menu-btn, .acc__btn, .phrase, .toc a, .viewer .x, .viewer .nav';
+function tap(p){
+  if (p.dataset.tap) return; p.dataset.tap = 1; p.classList.add('tap');
   const down = e => {
     p.classList.add('is-press');
     if (RM) return;
@@ -52,7 +54,9 @@ $$('.pill').forEach(p => {
   const up = () => setTimeout(() => p.classList.remove('is-press'), 90);
   p.addEventListener('pointerdown', down);
   p.addEventListener('pointerup', up); p.addEventListener('pointerleave', up); p.addEventListener('pointercancel', up);
-});
+}
+$$(TAP).forEach(tap);
+window.SITE.tap = tap;
 
 /* ---------- появление при прокрутке ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => {
