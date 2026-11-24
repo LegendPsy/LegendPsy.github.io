@@ -137,6 +137,13 @@ const photos = $$('.photo img');
 let mx = 0, my = 0;
 if (FINE && !RM) addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
 
+/* ---------- часы, которые растут сами ----------
+   data-grow="база,дата,дней на 1 час": от даты письма прибавляем по часу */
+const grown = v => { const [b, d, per] = v.split(','); return +b + Math.max(0, Math.floor((Date.now() - new Date(d + 'T00:00:00')) / 864e5 / +per)); };
+const hoursWord = n => { const a = n % 10, b = n % 100; return (a === 1 && b !== 11) ? 'час' : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 'часа' : 'часов'; };
+$$('[data-grow]').forEach(el => { const n = grown(el.dataset.grow); if (el.hasAttribute('data-count')) el.dataset.count = n; el.textContent = n.toLocaleString('ru-RU'); });
+$$('[data-unit]').forEach(el => { el.textContent = hoursWord(grown(el.dataset.unit)); });
+
 /* ---------- счётчики ---------- */
 const counters = $$('[data-count]');
 const cio = new IntersectionObserver(es => es.forEach(e => {

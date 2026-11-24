@@ -102,6 +102,7 @@
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:26px 20px;margin:10px 0 34px}
 .stat b{display:block;font-weight:300;font-size:clamp(46px,12vw,76px);line-height:1}
 .stat span{display:block;font-size:14px;line-height:1.35;margin-top:6px;opacity:.9}
+.stat span span{display:inline;margin:0;font-size:inherit;opacity:1}
 
 /* финал */
 .final .big .s{color:var(--peach)}
@@ -331,8 +332,8 @@
       <div class="stats">
         <div class="stat rise"><b data-count="263">263</b><span>часа обучения ACT</span></div>
         <div class="stat rise"><b data-count="250">250</b><span>часов переподготовки по РЭПТ</span></div>
-        <div class="stat rise"><b data-count="118">118</b><span>часов личной терапии</span></div>
-        <div class="stat rise"><b data-count="63">63</b><span>часа супервизии, и она продолжается</span></div>
+        <div class="stat rise"><b data-count="118" data-grow="118,2026-03-01,7">118</b><span><span data-unit="118,2026-03-01,7">часов</span> личной терапии, и каждую неделю +1</span></div>
+        <div class="stat rise"><b data-count="63" data-grow="63,2026-03-26,30.44">63</b><span><span data-unit="63,2026-03-26,30.44">часа</span> супервизии, и каждый месяц +1</span></div>
       </div>
       <p class="p rise">Бакалавр психологии (Московский институт психоанализа), член АКПН и больше двадцати курсов: ACT, СДВГ, поведенческая психология, психосоматика, работа с подростками.</p>
       <div class="pills rise"><a class="pill" href="obrazovanie/">Дипломы и сертификаты</a></div>
