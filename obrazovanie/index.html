@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Образование — Алексей Давыдыч</title>
+<meta name="description" content="Дипломы и сертификаты психолога Алексея Давыдыча: бакалавриат, переподготовка по РЭПТ, обучение ACT, СДВГ и другое.">
+<meta name="theme-color" content="#2b5d61">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.group{margin:0 0 56px}
+.group h2{font-weight:300;text-transform:uppercase;font-size:clamp(28px,7vw,48px);line-height:1;margin:0 0 22px}
+.group h2 .s{font-family:var(--serif);font-style:italic;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 16px}
+@media (min-width:880px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:30px 24px}}
+.doc{background:none;border:0;padding:0;text-align:left;cursor:zoom-in;-webkit-tap-highlight-color:transparent}
+.doc .sheet{display:block;aspect-ratio:1.414/1;background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.08),0 8px 18px rgba(30,20,10,.14);transform:rotate(var(--r,0deg));transition:transform .6s var(--spring),box-shadow .4s}
+.doc.tall .sheet{aspect-ratio:1/1.414}
+.doc .sheet img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.doc:hover .sheet,.doc:focus-visible .sheet{transform:rotate(0) translateY(-6px) scale(1.03);box-shadow:0 16px 30px rgba(30,20,10,.22)}
+.doc:active .sheet{transform:scale(.97)}
+.doc b{display:block;font-weight:500;font-size:15px;line-height:1.3;margin:12px 0 4px}
+.doc span.meta{display:block;font-size:13px;line-height:1.35;opacity:.75}
+.letters{display:grid;gap:14px;max-width:40em}
+.letter{padding:18px 20px;border-radius:14px;background:color-mix(in srgb,var(--teal) 9%,transparent);border:1.5px solid color-mix(in srgb,var(--teal) 30%,transparent)}
+.letter b{display:block;font-size:30px;font-weight:300;line-height:1}
+/* просмотр документа */
+.viewer{position:fixed;inset:0;z-index:60;background:rgba(20,16,14,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 14px 24px;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;touch-action:pan-y}
+.viewer.open{opacity:1;visibility:visible}
+.viewer img{max-width:100%;max-height:calc(100svh - 190px);object-fit:contain;border-radius:3px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:scale(.92);transition:transform .55s var(--spring)}
+.viewer.open img{transform:none}
+.viewer .cap{color:var(--cream);text-align:center;max-width:36em;margin:18px 0 0;font-size:15px;line-height:1.4}
+.viewer .cap b{display:block;font-weight:500;font-size:17px}
+.viewer .x{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--cream);background:none;color:var(--cream);font-size:24px;cursor:pointer}
+.viewer .nav{position:absolute;top:50%;width:48px;height:48px;margin-top:-24px;border-radius:50%;border:0;background:rgba(243,237,227,.14);color:var(--cream);font-size:22px;cursor:pointer}
+.viewer .prev{left:8px}.viewer .next{right:8px}
+.viewer .count{color:var(--cream);opacity:.6;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<button class="menu-btn" aria-label="Меню" aria-expanded="false"><i></i></button>
+<nav class="menu" aria-label="Разделы">
+  <a href="../">Главная</a>
+  <a href="../#act">Что такое <span class="s">ACT</span></a>
+  <a href="../#formats">Как мы <span class="s">работаем</span></a>
+  <a href="../stati/">Мои <span class="s">статьи</span></a>
+  <a href="../soglasie/">Согласие</a>
+  <a href="../#write">Записаться</a>
+</nav>
+
+<section class="sec sec--teal" style="padding-bottom:64px">
+  <div class="wrap">
+    <a class="back" href="../">На главную</a>
+    <h1 class="big rise in"><span class="line">Дипломы</span><span class="line s">и сертификаты</span></h1>
+    <p class="lead">Всё, чему я учился, в одном месте. Нажмите на любой документ, чтобы рассмотреть его.</p>
+  </div>
+</section>
+
+<section class="sec sec--paper">
+  <div class="wrap" id="groups"></div>
+  <div class="wrap group">
+    <h2>Супервизия <span class="s">и личная терапия</span></h2>
+    <div class="letters">
+      <div class="letter"><b>63 часа</b>индивидуальной супервизии в ACT с 2024 года. Супервизия продолжается на регулярной основе.</div>
+      <div class="letter"><b>118 часов</b>личной психотерапии (ACT и терапия когерентности) с октября 2023 года.</div>
+    </div>
+    <p class="small" style="margin-top:14px">Письма-подтверждения от супервизора и терапевта могу показать лично.</p>
+  </div>
+  <div class="wrap"><div class="pills"><a class="pill pill--terra" href="../#write">Записаться</a></div></div>
+</section>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Документ">
+  <button class="x" aria-label="Закрыть">×</button>
+  <button class="nav prev" aria-label="Предыдущий">←</button>
+  <img alt="">
+  <p class="cap"></p>
+  <p class="count"></p>
+  <button class="nav next" aria-label="Следующий">→</button>
+</div>
+
+<footer class="foot"><div class="foot__row"><a href="../">Главная</a><a href="https://t.me/lexej">Telegram</a><a href="https://www.b17.ru/davydych_aleksey/">B17</a></div><p class="foot__small">© Алексей Давыдыч, психолог.</p></footer>
+
+<script src="../assets/site.js"></script>
+<script>
+(() => {
+/* Список документов: [файл, название, кто выдал и сколько часов, вертикальный ли лист] */
+const GROUPS = [
+  ['Дипломы', 'об образовании', [
+    ['diplom-bakalavr', 'Диплом бакалавра, психология', 'Московский институт психоанализа, 2021–2026'],
+    ['diplom-rept', 'Профессиональная переподготовка «Рационально-эмотивно-поведенческая терапия»', 'Высшая школа «Среда обучения», 250 ч, 2023'],
+  ]],
+  ['Терапия принятия', 'и ответственности', [
+    ['act-263', 'Терапия принятия и ответственности (ACT)', 'Академия современной психологии, 263 ч', 1],
+    ['act-bazovyj', 'Терапия принятия и ответственности', 'Чистые когниции, курс Ольги Турчинской, 25 ч, 2023'],
+    ['act-prodvinutyj', 'ACT. Продвинутый уровень', 'Чистые когниции, 25 ч, 2023'],
+    ['act-praktikum', 'Практикум по терапии принятия и ответственности', 'Евгения Дашкова, 26 ч, 2026'],
+    ['rft', 'Теория реляционных фреймов (RFT)', 'Академия современной психологии, 18 ч, 2024'],
+    ['povedenie', 'Основы поведенческой психологии', 'Чистые когниции, 20 ч, 2023'],
+    ['akpn-chlen', 'Член Ассоциации специалистов в сфере контекстуально-поведенческой науки', 'АКПН, с 2023'],
+    ['akpn-konf', 'III конференция по ACT «Жизнь как процесс»', 'АКПН, 2023'],
+  ]],
+  ['СДВГ', 'и нейроотличность', [
+    ['sdvg-36', 'Психотерапия взрослых с СДВГ', 'Евгения Дашкова, 36 ч'],
+    ['sdvg-cikl', 'Цикл вебинаров о взрослых с СДВГ', 'Академия современной психологии, 15 ч, 2026'],
+    ['sdvg-self', 'Идентичность и особенности селф у взрослых с СДВГ', 'Академия современной психологии, 5 ч, 2024', 1],
+    ['sdvg-ispoln', 'Работа с исполнительной дисфункцией у взрослых с СДВГ', 'Академия современной психологии, 5 ч, 2024', 1],
+    ['konf-neuro', '«Отличная конференция» о нейроотличных людях', '2024'],
+  ]],
+  ['Другие', 'направления', [
+    ['psihosomatika', 'Психосоматика', 'Высшая школа «Среда обучения», 54 ч, 2022'],
+    ['praktik', 'Психолог-практик', 'Сергей Смирнов, 60 ч, 2022'],
+    ['nevroticheskie', 'Психология и психотерапия невротических отношений', 'Московская международная академия, 36 ч, 2024'],
+    ['rpp', 'ACT при расстройствах пищевого поведения и недовольстве внешностью', 'Поведенческая компания, 24 ч, 2023'],
+    ['dnav', 'Подход DNA-V в работе с подростками', 'Академия современной психологии, 32 ч, 2024', 1],
+    ['lgbtk', 'Особенности консультирования ЛГБТК+ клиентов', 'Психология за права человека, 35 ч, 2023'],
+    ['motiv', 'Навыки мотивационного интервью', 'BG Courses, 19 ч, 2025'],
+    ['alko', 'Расстройство, связанное с употреблением алкоголя: от нейробиологии к терапии в ACT', 'Интенсив Ильи Гавина, 2,5 ч, 2026'],
+    ['lichnost', 'Расстройства личности: дименсиональная модель', 'Вебинар Евгении Дашковой, 2026'],
+  ]],
+];
+const root = document.getElementById('groups'), flat = [];
+GROUPS.forEach(([a, b, docs]) => {
+  const g = document.createElement('div'); g.className = 'group';
+  g.innerHTML = `<h2>${a} <span class="s">${b}</span></h2><div class="grid"></div>`;
+  const grid = g.querySelector('.grid');
+  docs.forEach(d => {
+    const i = flat.length; flat.push(d);
+    const el = document.createElement('button'); el.className = 'doc rise' + (d[3] ? ' tall' : '');
+    el.style.setProperty('--r', ((i * 37 % 7) - 3) * .5 + 'deg');
+    el.innerHTML = `<span class="sheet"><img src="../docs/${d[0]}.jpg" alt="" loading="lazy"></span><b>${d[1]}</b><span class="meta">${d[2]}</span>`;
+    el.addEventListener('click', () => open(i));
+    grid.appendChild(el);
+  });
+  root.appendChild(g);
+});
+document.querySelectorAll('.doc.rise').forEach(el => new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting){ el.classList.add('in'); o.disconnect(); } })).observe(el));
+
+const v = document.getElementById('viewer'), img = v.querySelector('img'), cap = v.querySelector('.cap'), cnt = v.querySelector('.count');
+let cur = 0, last = null;
+function show(i){ cur = (i + flat.length) % flat.length; const d = flat[cur];
+  img.src = `../docs/${d[0]}.jpg`; img.alt = d[1]; cap.innerHTML = `<b>${d[1]}</b>${d[2]}`; cnt.textContent = `${cur + 1} из ${flat.length}`; }
+function open(i){ last = document.activeElement; show(i); v.classList.add('open'); v.querySelector('.x').focus(); document.body.style.overflow = 'hidden'; }
+function close(){ v.classList.remove('open'); document.body.style.overflow = ''; last && last.focus(); }
+v.querySelector('.x').onclick = close;
+v.querySelector('.prev').onclick = () => show(cur - 1);
+v.querySelector('.next').onclick = () => show(cur + 1);
+v.addEventListener('click', e => { if (e.target === v) close(); });
+addEventListener('keydown', e => { if (!v.classList.contains('open')) return;
+  if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
+let sx = null;
+v.addEventListener('touchstart', e => sx = e.touches[0].clientX, { passive: true });
+v.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); sx = null; });
+})();
+</script>
+</body>
+</html>

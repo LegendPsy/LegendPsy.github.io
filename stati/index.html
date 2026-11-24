@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Статьи психолога</title>
+<meta name="description" content="Все статьи в одном месте: об отношениях, любви, норме и личных границах. Многие можно не только читать, но и слушать.">
+<meta property="og:title" content="Статьи психолога">
+<meta property="og:description" content="Открытки из путешествия: каждая статья — своя открытка.">
+<meta name="theme-color" content="#efe4d0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efe4d0; --bg2:#e4d5bb; --ink:#2b2119; --ink2:#5a4a3c; --muted:#8a7764; --line:#c9b597;
+  --paper:#fbf6ec; --paper2:#f3ead9; --accent:#b4532e; --stamp:#9b2f2a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#1f1914; --bg2:#16110d; --ink:#f1e6d4; --ink2:#cdbca5; --muted:#a08c76; --line:#4a3b2d; }
+}
+:root[data-theme="dark"]{ --bg:#1f1914; --bg2:#16110d; --ink:#f1e6d4; --ink2:#cdbca5; --muted:#a08c76; --line:#4a3b2d; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100svh; color:var(--ink); background:var(--bg);
+  font:400 16px/1.5 "Golos Text",system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+/* карта на столе: горизонтали, медленно дышит */
+.map{position:fixed; inset:-10%; z-index:0; pointer-events:none; opacity:.55;
+  background:radial-gradient(ellipse at 30% 20%, transparent 0 40%, var(--bg2) 100%)}
+.map svg{position:absolute; inset:0; width:100%; height:100%; animation:drift 40s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(-2%,1.5%) rotate(.6deg)}}
+main{position:relative; z-index:1; max-width:560px; margin:0 auto; padding:calc(12px + env(safe-area-inset-top)) 16px calc(60px + env(safe-area-inset-bottom))}
+
+header{text-align:center}
+.home{display:inline-flex; align-items:center; min-height:40px; margin:0 0 2px; padding:0 4px; color:var(--ink2); font-size:14px; text-decoration:none; border-bottom:1px solid var(--line)}
+.home:hover{color:var(--accent)}
+.home:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+h1{font:600 30px/1.1 Lora,Georgia,serif; margin:0; display:flex; align-items:baseline; justify-content:center; gap:10px; flex-wrap:wrap}
+h1 .kicker{font-family:"Golos Text",sans-serif; font-weight:500}
+.intro{margin:0 auto; max-width:30em; color:var(--ink2)}
+.whisper{margin:4px 0 0; min-height:1.5em; font:italic 400 15px/1.5 Lora,Georgia,serif; color:var(--muted); opacity:0; transition:opacity 1.2s}
+.whisper.on{opacity:1}
+
+/* ---------- колода ---------- */
+.picker{position:sticky; top:0; z-index:30; margin:8px -16px 8px; padding:10px 0 12px;
+  background:linear-gradient(var(--bg) 78%, color-mix(in srgb, var(--bg) 0%, transparent))}
+.picker .rail{display:flex; gap:8px; overflow-x:auto; padding:0 16px; scroll-snap-type:x proximity; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+.picker .rail::-webkit-scrollbar{display:none}
+.pill{position:relative; flex:none; scroll-snap-align:center; display:flex; align-items:center; gap:8px; min-height:44px; padding:4px 14px 4px 5px; border-radius:99px;
+  border:1px solid var(--line); background:color-mix(in srgb, var(--paper) 70%, transparent); color:var(--ink2); cursor:pointer;
+  font:500 14.5px/1.1 "Golos Text",sans-serif; transition:background .25s, color .25s, border-color .25s, transform .15s; -webkit-tap-highlight-color:transparent}
+.pill:active{transform:scale(.96)}
+.pill img{width:34px; height:34px; border-radius:50%; object-fit:cover; flex:none; box-shadow:0 0 0 2px var(--paper)}
+.pill.soon img{filter:blur(2px) saturate(.5)}
+.pill[aria-current="true"]{background:var(--pc,#2b2119); color:#fff8ec; border-color:transparent}
+.pill .dot{position:absolute; right:6px; top:5px; width:7px; height:7px; border-radius:50%; background:var(--stamp); display:none}
+.pill.read .dot{display:block}
+.pill[aria-current="true"] .dot{background:#fff8ec}
+.pill:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.stage{position:relative; perspective:1400px; touch-action:pan-y; transition:height .45s cubic-bezier(.3,1,.4,1)}
+.slot{position:absolute; left:0; right:0; top:0; visibility:hidden; will-change:transform}
+.slot.cur{position:relative; visibility:visible}
+.slot.leaving{visibility:visible; z-index:2; pointer-events:none}
+.nav{display:flex; align-items:center; justify-content:space-between; margin:14px 2px 0; color:var(--muted); font-size:14px}
+.nav button{min-width:48px; min-height:44px; border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--ink2); font:500 18px "Golos Text",sans-serif; cursor:pointer}
+.nav button:disabled{opacity:.35; cursor:default}
+.nav button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.card{position:relative; transform-style:preserve-3d; transition:transform .8s cubic-bezier(.3,1.35,.45,1); will-change:transform;
+  transform:translateY(var(--ly,0px)) rotate(var(--rot,0deg)) scale(var(--s,1)) rotateX(var(--tx,0deg)) rotateY(calc(var(--ty,0deg) + var(--flip,0deg)))}
+.card.dragging{transition:transform .12s ease-out}
+.card.flipped{--flip:180deg}
+.face{position:relative; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:10px; background:var(--paper); color:#2b2119;
+  padding:10px; box-shadow:0 1px 0 #fff8 inset, 0 18px 40px -18px rgba(40,25,10,.55), 0 2px 6px rgba(40,25,10,.18)}
+.face::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; filter:brightness(var(--dim,1));
+  background:repeating-linear-gradient(33deg, rgba(120,90,50,.025) 0 2px, transparent 2px 6px)}
+.shade{position:absolute; inset:0; border-radius:10px; background:#1a120b; opacity:var(--shade,0); pointer-events:none; z-index:5; transition:opacity .2s}
+.back{position:absolute; inset:0; transform:rotateY(180deg); display:flex; flex-direction:column; padding:22px 20px 18px}
+
+.pic{position:relative; border-radius:6px; overflow:hidden; aspect-ratio:3/2; background:#d9cbb4}
+.pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.06) translate(var(--px,0px),var(--py,0px)); transition:transform .5s ease-out}
+.sheen{position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light;
+  background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) var(--gx,45%), transparent calc(var(--gx,45%) + 18%))}
+/* марка и штемпель */
+.stamp{position:absolute; right:10px; top:10px; width:54px; height:64px; padding:4px; background:var(--paper);
+  outline:3px dotted var(--paper); outline-offset:1px; box-shadow:0 2px 6px #0004; transform:rotate(3deg)}
+.stamp i{display:block; width:100%; height:100%; background-size:cover; background-position:center; filter:saturate(.8)}
+.stamp b{position:absolute; left:6px; bottom:5px; font:600 8px/1 "Golos Text",sans-serif; color:#fff; text-shadow:0 1px 2px #000a}
+.postmark{position:absolute; right:62px; top:58px; width:62px; height:62px; border:1.5px solid rgba(30,25,40,.55); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; text-align:center; font:600 8px/1.2 "Golos Text",sans-serif; letter-spacing:.08em; color:rgba(30,25,40,.6);
+  text-transform:uppercase; transform:rotate(-14deg); pointer-events:none}
+.postmark::before,.postmark::after{content:""; position:absolute; left:-30px; width:30px; height:2px; background:repeating-linear-gradient(90deg, rgba(30,25,40,.45) 0 6px, transparent 6px 9px)}
+.postmark::before{top:24px} .postmark::after{top:34px}
+
+.body{padding:14px 8px 6px}
+.title{font:600 clamp(23px,6.4vw,28px)/1.15 Lora,Georgia,serif; margin:4px 0 6px}
+.sub{font:italic 400 16px/1.45 Lora,Georgia,serif; color:#4a3b30; margin:0 0 12px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px; padding:0; list-style:none}
+.chips li{font-size:13px; padding:3px 10px; border-radius:99px; background:#ece0cb; color:#4d3d30}
+.row{display:flex; gap:8px}
+.go{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; min-height:50px; border-radius:10px; text-decoration:none;
+  background:var(--c,#2b2119); color:#fff8ec; font:600 16px/1 "Golos Text",sans-serif; box-shadow:inset 0 1px 0 #fff3, 0 6px 14px -8px #000a; transition:transform .15s}
+.go:active{transform:scale(.98)}
+.turn{flex:none; width:50px; min-height:50px; border-radius:10px; border:1px solid #d8c7ab; background:transparent; color:#5a4a3c; cursor:pointer;
+  display:flex; align-items:center; justify-content:center}
+.go:focus-visible,.turn:focus-visible,.back a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+/* оборот открытки */
+.back .lines{flex:1; display:grid; grid-template-columns:1fr 1px .8fr; gap:14px; min-height:0}
+.back .msg{font:italic 400 17px/1.55 Lora,Georgia,serif; color:#3b2e25; overflow:auto}
+.back .msg p{margin:0 0 10px}
+.back .sep{background:#d8c7ab}
+.back .addr{display:flex; flex-direction:column; justify-content:flex-end; gap:16px; padding-bottom:6px}
+.back .addr span{display:block; border-bottom:1px solid #cdbb9c; padding-bottom:3px; font-size:12px; color:#6f5f50; word-break:break-all}
+.back .extra{display:flex; flex-wrap:wrap; gap:4px 14px; margin:10px 0}
+.back .extra a{color:var(--accent); font-weight:500; text-underline-offset:3px}
+.back .row{margin-top:8px}
+
+/* прочитано: чернильный штамп */
+.inked{position:absolute; left:18px; top:18px; z-index:4; padding:6px 10px; border:2.5px solid var(--stamp); border-radius:6px; color:var(--stamp);
+  font:700 13px/1 "Golos Text",sans-serif; letter-spacing:.14em; text-transform:uppercase; transform:rotate(-9deg); opacity:.82; pointer-events:none;
+  -webkit-mask:repeating-radial-gradient(circle at 30% 40%, #000 0 2px, rgba(0,0,0,.75) 2px 3px); mask:repeating-radial-gradient(circle at 30% 40%, #000 0 2px, rgba(0,0,0,.75) 2px 3px);
+  background:rgba(255,255,255,.15); display:none}
+.read .inked{display:block}
+.inked.thump{animation:thump .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes thump{from{transform:rotate(-9deg) scale(1.6); opacity:0} to{transform:rotate(-9deg) scale(1); opacity:.82}}
+
+/* ещё в пути: запечатанная открытка */
+.soon .pic img{filter:blur(6px) saturate(.6) brightness(.9); transform:scale(1.15)}
+.soon .go{background:#a79580}
+.seal{position:absolute; left:50%; top:50%; width:84px; height:84px; margin:-42px; border-radius:50%; z-index:3;
+  background:radial-gradient(circle at 35% 30%, #d0574b, #8f2219 70%); box-shadow:0 4px 10px #0006, inset 0 -3px 6px #0005, inset 0 3px 4px #fff3;
+  display:flex; align-items:center; justify-content:center; color:#f6d9c8; font:italic 600 15px/1 Lora,serif; transform:rotate(var(--sr,-8deg))}
+.seal::before{content:""; position:absolute; inset:8px; border-radius:50%; border:1.5px dashed #f2c7b366}
+.note{min-height:1.4em; margin:0 0 10px; font:italic 400 15px/1.4 Lora,serif; color:#7a5a45; opacity:0; transition:opacity .4s}
+.note.on{opacity:1}
+
+.end{margin:34px auto 0; text-align:center; color:var(--muted); font:italic 400 15px/1.5 Lora,Georgia,serif}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){
+  .map svg{animation:none}
+  .card{transition:none}
+  .card.flipped{--flip:0deg}
+  .card.flipped .front{display:none}
+  .card.flipped .back{position:relative; transform:none}
+}
+</style>
+</head>
+<body>
+<div class="map" aria-hidden="true">
+  <svg viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="var(--line)" stroke-width="1.2">
+      <path d="M-20 140 C120 90 210 210 360 170 S620 60 820 150"/>
+      <path d="M-20 180 C130 130 220 250 370 210 S630 100 820 190"/>
+      <path d="M-20 230 C140 180 230 300 380 260 S640 150 820 240" opacity=".7"/>
+      <path d="M90 520 C150 440 290 430 330 500 S300 640 200 630 S40 600 90 520Z"/>
+      <path d="M120 525 C165 470 270 465 300 510 S280 610 205 602 S85 580 120 525Z"/>
+      <path d="M150 530 C180 500 245 498 265 522 S255 575 210 572 S135 560 150 530Z" opacity=".7"/>
+      <path d="M480 760 C560 690 720 700 760 790 S690 950 590 930 S420 850 480 760Z"/>
+      <path d="M520 775 C580 725 700 735 725 800 S670 905 595 890 S475 835 520 775Z"/>
+      <path d="M-20 1000 C160 960 260 1080 420 1040 S660 960 820 1030" />
+      <path d="M-20 1050 C170 1010 270 1130 430 1090 S670 1010 820 1080" opacity=".7"/>
+      <path d="M40 300 Q200 420 260 700 T420 1180" stroke-dasharray="2 9" stroke-width="2"/>
+    </g>
+  </svg>
+</div>
+
+<main>
+  <header>
+    <a class="home" href="../" target="_top">← На главную</a>
+    <h1>Статьи <span class="kicker">открытки из путешествия</span></h1>
+    <p class="whisper" id="whisper" aria-live="polite"></p>
+  </header>
+
+  <nav class="picker" aria-label="Статьи"><div class="rail" id="rail"></div></nav>
+  <section class="stage" id="deck" aria-live="polite"></section>
+  <div class="nav"><button type="button" id="prev" aria-label="Предыдущая открытка">←</button><span id="count"></span><button type="button" id="next" aria-label="Следующая открытка">→</button></div>
+  <p class="end">Об отношениях, любви, норме и границах. Многие статьи можно ещё и слушать в авторской озвучке. Новые открытки приходят сюда же.</p>
+</main>
+
+<script>
+/* ======================================================================
+   СПИСОК СТАТЕЙ. Новая статья = новый блок { ... } в начале списка
+   (в полоске сверху она будет первой). Картинка 3:2 кладётся в папку art/.
+   short — короткое название для полоски (1–3 слова).
+   status: "open" — можно читать, "soon" — запечатана сургучом.
+   ====================================================================== */
+const ARTICLES = [
+  { id:"partner", status:"soon",
+    short:"Смотреть бесконечно", title:"На что можно смотреть бесконечно",
+    sub:"Почему список качеств «идеального партнёра» рассыпается в первый же плохой вторник.",
+    img:"art/partner.jpg", soonNote:"Эта открытка ещё в пути. Скоро дойдёт." },
+  { id:"granicy", status:"open",
+    short:"Границы", title:"Чьи это границы?",
+    sub:"Почему разговор о личных границах незаметно превратил их в свод правил для окружающих и вернул нам беспомощность, от которой мы пытались сбежать.",
+    url:"https://legendpsy.github.io/relations-essay/granicy/", img:"art/granicy.jpg",
+    chips:["≈ 14 минут","живой сайт"], color:"#3d5a3a", mark:"Сад" },
+  { id:"kak-dolzhno", status:"open",
+    short:"Как должно быть", title:"Как вообще-то должно быть",
+    sub:"Где проходит ваша норма? Или почему нам так сложно радоваться тому, что уже хорошо.",
+    url:"https://legendpsy.github.io/relations-essay/kak-dolzhno/", img:"art/kak-dolzhno.jpg",
+    chips:["≈ 16 минут","мультфильм «Дубль два»"], color:"#a5563a", mark:"Город",
+    extra:[["Сразу к мультфильму","https://legendpsy.github.io/relations-essay/kak-dolzhno/#multfilm"]] },
+  { id:"gorizont", status:"open",
+    short:"Горизонт", title:"Горизонт отношений",
+    sub:"Статья в четырёх частях. Её можно читать, слушать в авторской озвучке и смотреть мультик одновременно.",
+    url:"https://legendpsy.github.io/relations-essay/gorizont/", img:"art/gorizont.jpg",
+    chips:["4 части","≈ 1 час","авторская озвучка","мультик"], color:"#5d7a4c", mark:"Дорога",
+    extra:[["Вся статья целиком","https://legendpsy.github.io/relations-essay/gorizont/celikom.html"]] },
+  { id:"love", status:"open",
+    short:"Любовь и страдание", title:"Любовь не измеряется страданием",
+    sub:"Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.",
+    url:"https://legendpsy.github.io/love-essay/", img:"art/love.jpg",
+    chips:["≈ 8 минут","интерактивное эссе"], color:"#6b2a36", mark:"Скала",
+    extra:[["Кино-версия","https://legendpsy.github.io/love-essay/cinematic/"]] }
+];
+</script>
+<script>
+(() => {
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- память ---------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('otkrytki.' + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('otkrytki.' + k, JSON.stringify(v)); } catch(e){} }
+};
+const visits = store.get('visits', 0) + 1; store.set('visits', visits);
+const read = new Set(store.get('read', []));
+const hr = new Date().getHours();
+const w = $('whisper');
+w.textContent = visits === 1
+  ? (hr >= 22 || hr < 6 ? 'Поздняя почта. Выберите открытку.' : 'Выберите статью. Открытку можно перевернуть.')
+  : (read.size ? 'С возвращением. Прочитанные отмечены штампом.' : 'С возвращением. Почта на месте.');
+setTimeout(() => w.classList.add('on'), 600);
+
+/* ---------- открытки ---------- */
+const deck = $('deck');
+const YEAR = new Date().getFullYear();
+const LIST = [...ARTICLES.filter(a => a.status !== "soon"), ...ARTICLES.filter(a => a.status === "soon")];
+const cards = LIST.map((a, i) => {
+  const slot = document.createElement('div');
+  slot.className = 'slot';
+  const soon = a.status === 'soon';
+  slot.innerHTML = `
+  <article class="card${soon ? ' soon' : ''}${read.has(a.id) ? ' read' : ''}" style="--c:${a.color || '#2b2119'}" tabindex="-1">
+    <div class="face front">
+      <div class="pic">
+        <img src="${a.img}" alt="" loading="eager" decoding="async">
+        <div class="sheen"></div>
+        ${soon ? '<div class="seal">скоро</div>' : `<div class="stamp"><i style="background-image:url('${a.img}')"></i><b>${esc(a.mark || '')}</b></div><div class="postmark">${esc(a.short || '')}<br>${YEAR}</div>`}
+      </div>
+      <div class="inked">прочитано</div>
+      <div class="body">
+        <h2 class="title">${esc(a.title)}</h2>
+        <p class="sub">${esc(a.sub || '')}</p>
+        ${a.chips ? `<ul class="chips">${a.chips.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}
+        ${soon ? `<p class="note" aria-live="polite"></p><div class="row"><button class="go" type="button" data-soon>Ещё в пути</button></div>`
+               : `<div class="row"><a class="go" href="${a.url}" target="_top">Читать <span aria-hidden="true">→</span></a>
+                  <button class="turn" type="button" aria-label="Перевернуть открытку">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></svg>
+                  </button></div>`}
+      </div>
+      <div class="shade"></div>
+    </div>
+    ${soon ? '' : `<div class="face back" aria-hidden="true">
+      <div class="lines">
+        <div class="msg"><p>${esc(a.sub || '')}</p><p>${esc((a.chips || []).join(', '))}.</p></div>
+        <div class="sep"></div>
+        <div class="addr"><span>Куда: ${esc(a.url.replace('https://', ''))}</span><span>Кому: вам</span></div>
+      </div>
+      ${a.extra ? `<div class="extra">${a.extra.map(([t, u]) => `<a href="${u}" target="_top">${esc(t)}</a>`).join('')}</div>` : ''}
+      <div class="row"><a class="go" href="${a.url}" target="_top" tabindex="-1">Читать <span aria-hidden="true">→</span></a>
+        <button class="turn" type="button" aria-label="Перевернуть обратно" tabindex="-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></svg>
+        </button></div>
+    </div>`}
+  </article>`;
+  deck.appendChild(slot);
+  const card = slot.querySelector('.card');
+  // каждая открытка лежит в колоде чуть по-своему
+  const seed = Math.sin((i + 1) * 77.3) * 1e4, r = seed - Math.floor(seed);
+  return { a, slot, card, i, rot:(r - .5) * 3, soon };
+});
+
+/* ---------- палец: открытка чуть поддаётся под нажимом ---------- */
+cards.forEach(c => {
+  const card = c.card;
+  let down = null;
+  card.addEventListener('pointerdown', e => {
+    if (e.target.closest('a,button')) return;
+    down = { x:e.clientX, y:e.clientY, t:performance.now() };
+    if (RM) return;
+    press(e); card.classList.add('dragging');
+  });
+  card.addEventListener('pointermove', e => {
+    if (!down || RM) { if (e.pointerType === 'mouse' && !RM) hover(e); return; }
+    const dx = e.clientX - down.x, dy = e.clientY - down.y;
+    if (!down.swipe && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2){ down.swipe = true; release(); try{ card.setPointerCapture(e.pointerId); }catch(_){} }
+    if (down.swipe){
+      // открытку тащат пальцем вбок: она едет и поворачивается, у края упирается
+      const edge = (dx > 0 && cur === 0) || (dx < 0 && cur === cards.length - 1);
+      const x = edge ? dx * .25 : dx;
+      down.lx = x; down.v = (e.clientX - (down.px || down.x)) / Math.max(1, e.timeStamp - (down.pt || down.t)) * 1000; down.px = e.clientX; down.pt = e.timeStamp;
+      c.slot.style.transform = `translateX(${x}px) rotate(${x * .03}deg)`;
+      return;
+    }
+    if (Math.hypot(dx, dy) > 12){ release(); down = null; return; }
+    press(e);
+  });
+  card.addEventListener('pointerleave', () => { if (!down) release(); });
+  const up = e => {
+    if (!down) return;
+    if (down.swipe){
+      const x = down.lx || 0, v = down.v || 0; down = null;
+      const W = c.slot.offsetWidth;
+      const go = (x < -W * .25 || v < -600) ? 1 : ((x > W * .25 || v > 600) ? -1 : 0);
+      const k = cur + go;
+      if (go && k >= 0 && k < cards.length){ c.slot.style.transform = ''; show(k, { dir:go, fromX:x }); }
+      else {
+        const a = c.slot.animate([{ transform:`translateX(${x}px) rotate(${x * .03}deg)` }, { transform:`translateX(${-x * .08}px)`, offset:.7 }, { transform:'none' }], { duration:420, easing:'cubic-bezier(.2,.9,.3,1)' });
+        c.slot.style.transform = '';
+      }
+      return;
+    }
+    const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
+    down = null; release();
+    if (moved < 10 && !e.target.closest('a,button')) flip(c);
+  };
+  card.addEventListener('pointerup', up);
+  card.addEventListener('pointercancel', () => { down = null; release(); c.slot.style.transform = ''; });
+  function tilt(e, k){
+    const r = card.getBoundingClientRect();
+    const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+    const s = card.classList.contains('flipped') ? -1 : 1;
+    card.style.setProperty('--ty', (dx * 9 * k * s).toFixed(2) + 'deg');
+    card.style.setProperty('--tx', (-dy * 7 * k).toFixed(2) + 'deg');
+    card.style.setProperty('--px', (-dx * 10 * k).toFixed(1) + 'px');
+    card.style.setProperty('--py', (-dy * 8 * k).toFixed(1) + 'px');
+    card.style.setProperty('--gx', (45 + dx * 60) + '%');
+  }
+  function press(e){ tilt(e, -1); }        // нажим: край под пальцем уходит вглубь
+  function hover(e){ card.classList.add('dragging'); tilt(e, .6); }
+  function release(){
+    card.classList.remove('dragging');
+    ['--ty','--tx','--px','--py'].forEach(p => card.style.removeProperty(p));
+  }
+  card.querySelectorAll('.turn').forEach(b => b.addEventListener('click', () => flip(c)));
+  card.querySelectorAll('a').forEach(l => l.addEventListener('click', () => markRead(c)));
+  const s = card.querySelector('[data-soon]');
+  if (s) s.addEventListener('click', () => flip(c));
+});
+
+function flip(c){
+  if (c.soon){
+    // сургуч держит: открытка вздрагивает, печать покачивается
+    const seal = c.card.querySelector('.seal'), note = c.card.querySelector('.note');
+    note.textContent = c.a.soonNote; note.classList.add('on');
+    if (!RM){
+      seal.animate([{ '--sr':'-8deg', transform:'rotate(-8deg) scale(1)' }, { transform:'rotate(6deg) scale(1.08)' }, { transform:'rotate(-14deg) scale(.98)' }, { transform:'rotate(-8deg) scale(1)' }], { duration:500, easing:'ease-out' });
+      c.card.animate([{ transform:getComputedStyle(c.card).transform }, { transform:getComputedStyle(c.card).transform + ' translateY(-6px) rotate(-1deg)' }, { transform:getComputedStyle(c.card).transform }], { duration:380, easing:'cubic-bezier(.3,1.6,.5,1)' });
+    }
+    clearTimeout(c.nt); c.nt = setTimeout(() => note.classList.remove('on'), 2800);
+    return;
+  }
+  const on = !c.card.classList.contains('flipped');
+  c.card.classList.toggle('flipped', on);
+  const front = c.card.querySelector('.front'), back = c.card.querySelector('.back');
+  front.setAttribute('aria-hidden', on); back.setAttribute('aria-hidden', !on);
+  front.querySelectorAll('a,button').forEach(x => x.tabIndex = on ? -1 : 0);
+  back.querySelectorAll('a,button').forEach(x => x.tabIndex = on ? 0 : -1);
+  if (on && !store.get('flipped', false)){ store.set('flipped', true); }
+  fit();
+}
+
+function markRead(c){
+  if (read.has(c.a.id)) return;
+  read.add(c.a.id); store.set('read', [...read]);
+  c.card.classList.add('read');
+  pills[cards.indexOf(c)].classList.add('read');
+  const ink = c.card.querySelector('.inked'); ink.classList.add('thump');
+}
+
+/* ---------- полоска со статьями и смена открыток ---------- */
+const rail = $('rail'), prevB = $('prev'), nextB = $('next'), count = $('count');
+const pills = cards.map((c, k) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'pill' + (c.soon ? ' soon' : '') + (read.has(c.a.id) ? ' read' : '');
+  b.style.setProperty('--pc', c.soon ? '#8b7a66' : (c.a.color || '#2b2119'));
+  b.innerHTML = `<img src="${c.a.img}" alt=""><span>${esc(c.a.short || c.a.title)}</span><i class="dot" aria-hidden="true"></i>`;
+  b.setAttribute('aria-label', c.a.title + (c.soon ? ', скоро' : ''));
+  b.addEventListener('click', () => show(k));
+  rail.appendChild(b);
+  return b;
+});
+let cur = -1, busy = false;
+function fit(){ const c = cards[cur]; if (c) deck.style.height = c.slot.offsetHeight + 'px'; }
+function show(k, opts = {}){
+  if (k === cur || k < 0 || k >= cards.length) return;
+  const dir = opts.dir || (k > cur ? 1 : -1);
+  const old = cards[cur], nw = cards[k];
+  if (old){
+    old.card.classList.remove('flipped');
+    old.slot.classList.remove('cur'); old.slot.classList.add('leaving');
+    if (!RM){
+      const from = opts.fromX || 0;
+      const a = old.slot.animate([
+        { transform:`translateX(${from}px) rotate(${from * .03}deg)` },
+        { transform:`translateX(${-dir * 125}%) translateY(30px) rotate(${-dir * 14}deg)`, opacity:.6 }
+      ], { duration:420, easing:'cubic-bezier(.5,0,.8,.4)' });
+      a.onfinish = () => { old.slot.classList.remove('leaving'); old.slot.style.transform = ''; };
+    } else old.slot.classList.remove('leaving');
+  }
+  nw.slot.classList.add('cur');
+  if (!RM && old){
+    nw.slot.animate([
+      { transform:`translateX(${dir * 110}%) translateY(-20px) rotate(${dir * 12}deg)` },
+      { transform:'translateX(0) rotate(0deg)', offset:.82 },
+      { transform:`translateX(${-dir * 6}px) rotate(${-dir * .6}deg)`, offset:.92 },
+      { transform:'none' }
+    ], { duration:620, easing:'cubic-bezier(.2,.8,.3,1)', delay:60, fill:'backwards' });
+  }
+  cur = k;
+  pills.forEach((p, i) => p.setAttribute('aria-current', i === k));
+  const p = pills[k];
+  rail.scrollTo({ left: p.offsetLeft - (rail.clientWidth - p.offsetWidth) / 2, behavior: RM || !old ? 'auto' : 'smooth' });
+  prevB.disabled = k === 0; nextB.disabled = k === cards.length - 1;
+  count.textContent = `${k + 1} из ${cards.length}`;
+  fit();
+  store.set('last', nw.a.id);
+  try { history.replaceState(null, '', '#' + nw.a.id); } catch(e){}
+  // если открытка уехала под полоску — поднимем к ней
+  const top = deck.getBoundingClientRect().top;
+  if (old && top < 60) scrollTo({ top: scrollY + top - 70, behavior: RM ? 'auto' : 'smooth' });
+}
+prevB.addEventListener('click', () => show(cur - 1));
+nextB.addEventListener('click', () => show(cur + 1));
+addEventListener('resize', fit);
+addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,textarea')) return; if (e.key === 'ArrowRight') show(cur + 1); if (e.key === 'ArrowLeft') show(cur - 1); });
+document.fonts && document.fonts.ready.then(fit);
+{
+  const want = (location.hash || '').slice(1) || store.get('last', '');
+  const k = cards.findIndex(c => c.a.id === want);
+  show(k >= 0 ? k : 0);
+}
+
+/* ---------- блик на бумаге медленно дышит ---------- */
+if (!RM){
+  let t0 = performance.now();
+  (function breathe(t){
+    if (!document.hidden){
+      const g = 45 + Math.sin((t - t0) / 1000 * (2 * Math.PI / 10)) * 12;
+      const c = cards[cur]; if (c && !c.card.classList.contains('dragging')) c.card.querySelector('.sheen').style.setProperty('--gx', g + '%');
+    }
+    requestAnimationFrame(breathe);
+  })(t0);
+}
+})();
+</script>
+</body>
+</html>

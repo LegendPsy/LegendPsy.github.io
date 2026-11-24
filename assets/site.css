@@ -1,0 +1,133 @@
+/* Основной сайт Алексея Давыдыча. Общие стили для всех страниц. */
+:root{
+  --cream:#f3ede3; --paper:#faf6ef; --ink:#1c1917; --ink-soft:#4a433d;
+  --terra:#b4543a; --terra-deep:#93412b; --peach:#efd0bd; --peach-deep:#e3b79f;
+  --teal:#2b5d61; --teal-deep:#1f4649; --sky:#a9cfd0; --rose:#e9a7a0;
+  --sans:"Raleway", "Helvetica Neue", Arial, sans-serif;
+  --serif:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --pad:20px; --max:1120px;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;font-weight:400;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+::selection{background:var(--terra);color:var(--cream)}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:6px}
+
+/* ---------- секции ---------- */
+.sec{position:relative;padding:84px var(--pad) 88px;overflow:hidden}
+.wrap{max-width:var(--max);margin:0 auto;position:relative}
+.sec--terra{background:var(--terra);color:var(--cream)}
+.sec--cream{background:var(--cream);color:var(--ink)}
+.sec--paper{background:var(--paper);color:var(--ink)}
+.sec--peach{background:var(--peach);color:var(--ink)}
+.sec--teal{background:var(--teal);color:var(--cream)}
+.sec--sky{background:var(--sky);color:var(--ink)}
+.sec--ink{background:var(--ink);color:var(--cream)}
+
+/* ---------- типографика ---------- */
+.big{font-family:var(--sans);font-weight:300;text-transform:uppercase;font-size:clamp(40px,11.2vw,108px);line-height:.94;letter-spacing:-.01em;margin:0 0 28px}
+.big .s{font-family:var(--serif);font-style:italic;font-weight:500;text-transform:uppercase;letter-spacing:0}
+.big .line{display:block}
+.mid{font-family:var(--sans);font-weight:300;text-transform:uppercase;font-size:clamp(30px,7.4vw,64px);line-height:.98;margin:0 0 22px}
+.mid .s{font-family:var(--serif);font-style:italic;font-weight:500}
+.lead{font-weight:500;font-size:clamp(17px,4.4vw,21px);line-height:1.45;max-width:36em;margin:0 0 18px}
+.p{max-width:36em;margin:0 0 16px}
+.small{font-size:14px;line-height:1.5;opacity:.85}
+.whisper{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.3;margin:0 0 14px;opacity:.9;min-height:1px}
+.facts{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:10px}
+.facts li{position:relative;padding-left:26px;font-weight:500;font-size:16px;line-height:1.4}
+.facts li::before{content:"";position:absolute;left:0;top:.32em;width:13px;height:15px;background:currentColor;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);opacity:.85}
+
+/* ---------- кнопки-таблетки ---------- */
+.pill{--bg:var(--cream);--fg:var(--terra);display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:0 34px;border-radius:999px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);text-decoration:none;text-transform:uppercase;font-weight:500;font-size:clamp(17px,4.6vw,22px);letter-spacing:.02em;cursor:pointer;position:relative;
+  box-shadow:0 6px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent);transition:transform .45s var(--spring),box-shadow .45s var(--spring);-webkit-tap-highlight-color:transparent;user-select:none}
+.pill:hover{transform:translateY(-2px);box-shadow:0 8px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent)}
+.pill.is-press,.pill:active{transform:translateY(5px) scale(.97);box-shadow:0 1px 0 -1px color-mix(in srgb,var(--fg) 55%,transparent);transition-duration:.08s}
+.pill--terra{--bg:var(--terra);--fg:var(--cream);border-color:var(--terra);box-shadow:0 6px 0 -1px var(--terra-deep)}
+.pill--terra.is-press,.pill--terra:active{box-shadow:0 1px 0 -1px var(--terra-deep)}
+.pill--ink{--bg:var(--ink);--fg:var(--cream);border-color:var(--ink);box-shadow:0 6px 0 -1px #000}
+.pill--ghost{--bg:transparent;--fg:currentColor;box-shadow:none;border-color:currentColor}
+.pill--ghost:active,.pill--ghost.is-press{box-shadow:none}
+.pills{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:rip .6s ease-out forwards}
+.pill{overflow:hidden}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+
+/* ---------- цена ---------- */
+.price{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin:6px 0 26px}
+.price b{font-weight:300;font-size:clamp(38px,10vw,58px);line-height:1;letter-spacing:-.01em}
+.price span{font-size:13px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;line-height:1.3;opacity:.9}
+
+/* ---------- раскрывашки ---------- */
+.acc{border-top:1.5px solid currentColor;margin-top:34px}
+.acc__item{border-bottom:1.5px solid color-mix(in srgb,currentColor 70%,transparent)}
+.acc__btn{width:100%;background:none;border:0;padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;font-weight:500;font-size:17px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.acc__plus{flex:0 0 22px;height:22px;position:relative;transition:transform .5s var(--spring)}
+.acc__plus::before,.acc__plus::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.6px;background:currentColor;margin-top:-.8px}
+.acc__plus::after{transform:rotate(90deg)}
+.acc__item.open .acc__plus{transform:rotate(135deg)}
+.acc__body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
+.acc__item.open .acc__body{grid-template-rows:1fr}
+.acc__in{overflow:hidden}
+.acc__in > div{padding:0 0 22px;max-width:40em}
+.acc__in p{margin:0 0 12px}
+.acc__in ul{margin:0 0 12px;padding-left:20px}
+.acc__in li{margin:0 0 8px}
+
+/* ---------- фото с линией от руки ---------- */
+.photo{position:relative;margin:64px auto 24px;max-width:440px}
+.photo img{width:100%;height:auto;aspect-ratio:var(--ar,4/5);object-fit:cover;border-radius:2px;will-change:transform}
+.photo img{position:relative;z-index:1}
+.photo .draw{position:absolute;z-index:2;inset:-7% -9%;width:118%;height:114%;pointer-events:none;overflow:visible}
+.draw path{fill:none;stroke:var(--stroke,var(--cream));stroke-width:7;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+
+/* ---------- сетка: текст + фото ---------- */
+@media (min-width:880px){
+  :root{--pad:48px}
+  .sec{padding:120px var(--pad)}
+  .split{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+  .split--rev{grid-template-columns:.85fr 1.15fr}
+  .split--rev .photo{order:-1}
+  .split .photo{margin:0}
+}
+
+/* ---------- меню ---------- */
+.menu-btn{position:fixed;top:14px;right:14px;z-index:50;width:48px;height:48px;border-radius:50%;background:var(--ink);border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 3px 14px rgba(0,0,0,.18);transition:transform .45s var(--spring)}
+.menu-btn:active{transform:scale(.9)}
+.menu-btn i{display:block;width:20px;height:1.8px;background:var(--cream);position:relative;transition:transform .4s var(--spring),background .2s}
+.menu-btn i::before,.menu-btn i::after{content:"";position:absolute;left:0;width:20px;height:1.8px;background:var(--cream);transition:transform .4s var(--spring)}
+.menu-btn i::before{top:-6px}.menu-btn i::after{top:6px}
+body.menu-open .menu-btn i{background:transparent}
+body.menu-open .menu-btn i::before{transform:translateY(6px) rotate(45deg)}
+body.menu-open .menu-btn i::after{transform:translateY(-6px) rotate(-45deg)}
+.menu{position:fixed;inset:0;z-index:40;background:var(--terra);color:var(--cream);display:flex;flex-direction:column;justify-content:center;padding:80px 28px 40px;clip-path:circle(0 at calc(100% - 38px) 38px);transition:clip-path .7s cubic-bezier(.7,0,.2,1);visibility:hidden}
+body.menu-open .menu{clip-path:circle(150% at calc(100% - 38px) 38px);visibility:visible}
+.menu a{display:block;text-decoration:none;text-transform:uppercase;font-weight:300;font-size:clamp(30px,8.5vw,56px);line-height:1.12;opacity:0;transform:translateY(16px);transition:opacity .4s,transform .5s var(--spring)}
+.menu a .s{font-family:var(--serif);font-style:italic;font-weight:500}
+body.menu-open .menu a{opacity:1;transform:none}
+.menu a:nth-child(2){transition-delay:.04s}.menu a:nth-child(3){transition-delay:.08s}.menu a:nth-child(4){transition-delay:.12s}.menu a:nth-child(5){transition-delay:.16s}.menu a:nth-child(6){transition-delay:.2s}.menu a:nth-child(7){transition-delay:.24s}.menu a:nth-child(8){transition-delay:.28s}
+.menu .menu-small{margin-top:34px;font-size:15px;opacity:.85}
+
+/* ---------- появление ---------- */
+.rise{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.rise.in{opacity:1;transform:none}
+
+/* ---------- подвал ---------- */
+.foot{background:var(--ink);color:var(--cream);padding:56px var(--pad) 40px;position:relative;overflow:hidden}
+.foot a{color:var(--cream)}
+.foot__row{display:flex;flex-wrap:wrap;gap:12px 26px;font-size:15px;margin:0 0 18px}
+.foot__small{font-size:13px;opacity:.65;max-width:40em}
+
+/* ---------- внутренние страницы ---------- */
+.back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:500;text-transform:uppercase;font-size:14px;letter-spacing:.05em;margin:0 0 34px}
+.back::before{content:"←";font-size:20px;transition:transform .4s var(--spring)}
+.back:hover::before{transform:translateX(-5px)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .rise{opacity:1;transform:none}
+}
