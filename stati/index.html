@@ -70,15 +70,13 @@ h1 .kicker{font-family:"Golos Text",sans-serif; font-weight:500}
 .nav button:disabled{opacity:.35; cursor:default}
 .nav button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .card{position:relative; transform-style:preserve-3d; transition:transform .8s cubic-bezier(.3,1.35,.45,1); will-change:transform;
-  transform:translateY(var(--ly,0px)) rotate(var(--rot,0deg)) scale(var(--s,1)) rotateX(var(--tx,0deg)) rotateY(calc(var(--ty,0deg) + var(--flip,0deg)))}
+  transform:translateY(var(--ly,0px)) rotate(var(--rot,0deg)) scale(var(--s,1)) rotateX(var(--tx,0deg)) rotateY(calc(var(--ty,0deg)))}
 .card.dragging{transition:transform .12s ease-out}
-.card.flipped{--flip:180deg}
-.face{position:relative; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:10px; background:var(--paper); color:#2b2119;
+.face{position:relative; border-radius:10px; background:var(--paper); color:#2b2119;
   padding:10px; box-shadow:0 1px 0 #fff8 inset, 0 18px 40px -18px rgba(40,25,10,.55), 0 2px 6px rgba(40,25,10,.18)}
 .face::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; filter:brightness(var(--dim,1));
   background:repeating-linear-gradient(33deg, rgba(120,90,50,.025) 0 2px, transparent 2px 6px)}
 .shade{position:absolute; inset:0; border-radius:10px; background:#1a120b; opacity:var(--shade,0); pointer-events:none; z-index:5; transition:opacity .2s}
-.back{position:absolute; inset:0; transform:rotateY(180deg); display:flex; flex-direction:column; padding:22px 20px 18px}
 
 .pic{position:relative; border-radius:6px; overflow:hidden; aspect-ratio:3/2; background:#d9cbb4}
 .pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.06) translate(var(--px,0px),var(--py,0px)); transition:transform .5s ease-out}
@@ -104,20 +102,10 @@ h1 .kicker{font-family:"Golos Text",sans-serif; font-weight:500}
 .go{flex:1; display:flex; align-items:center; justify-content:center; gap:8px; min-height:50px; border-radius:10px; text-decoration:none;
   background:var(--c,#2b2119); color:#fff8ec; font:600 16px/1 "Golos Text",sans-serif; box-shadow:inset 0 1px 0 #fff3, 0 6px 14px -8px #000a; transition:transform .15s}
 .go:active{transform:scale(.98)}
-.turn{flex:none; width:50px; min-height:50px; border-radius:10px; border:1px solid #d8c7ab; background:transparent; color:#5a4a3c; cursor:pointer;
-  display:flex; align-items:center; justify-content:center}
-.go:focus-visible,.turn:focus-visible,.back a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.extra{display:flex; flex-wrap:wrap; justify-content:center; gap:4px 18px; margin:12px 0 2px}
+.extra a{color:var(--accent); font-weight:500; text-underline-offset:3px}
+.go:focus-visible,.extra a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 
-/* оборот открытки */
-.back .lines{flex:1; display:grid; grid-template-columns:1fr 1px .8fr; gap:14px; min-height:0}
-.back .msg{font:italic 400 17px/1.55 Lora,Georgia,serif; color:#3b2e25; overflow:auto}
-.back .msg p{margin:0 0 10px}
-.back .sep{background:#d8c7ab}
-.back .addr{display:flex; flex-direction:column; justify-content:flex-end; gap:16px; padding-bottom:6px}
-.back .addr span{display:block; border-bottom:1px solid #cdbb9c; padding-bottom:3px; font-size:12px; color:#6f5f50; word-break:break-all}
-.back .extra{display:flex; flex-wrap:wrap; gap:4px 14px; margin:10px 0}
-.back .extra a{color:var(--accent); font-weight:500; text-underline-offset:3px}
-.back .row{margin-top:8px}
 
 /* прочитано: чернильный штамп */
 .inked{position:absolute; left:18px; top:18px; z-index:4; padding:6px 10px; border:2.5px solid var(--stamp); border-radius:6px; color:var(--stamp);
@@ -143,9 +131,6 @@ h1 .kicker{font-family:"Golos Text",sans-serif; font-weight:500}
 @media (prefers-reduced-motion:reduce){
   .map svg{animation:none}
   .card{transition:none}
-  .card.flipped{--flip:0deg}
-  .card.flipped .front{display:none}
-  .card.flipped .back{position:relative; transform:none}
 }
 </style>
 </head>
@@ -233,7 +218,7 @@ const read = new Set(store.get('read', []));
 const hr = new Date().getHours();
 const w = $('whisper');
 w.textContent = visits === 1
-  ? (hr >= 22 || hr < 6 ? 'Поздняя почта. Выберите открытку.' : 'Выберите статью. Открытку можно перевернуть.')
+  ? (hr >= 22 || hr < 6 ? 'Поздняя почта. Выберите открытку.' : 'Выберите статью сверху или листайте открытки пальцем.')
   : (read.size ? 'С возвращением. Прочитанные отмечены штампом.' : 'С возвращением. Почта на месте.');
 setTimeout(() => w.classList.add('on'), 600);
 
@@ -259,25 +244,11 @@ const cards = LIST.map((a, i) => {
         <p class="sub">${esc(a.sub || '')}</p>
         ${a.chips ? `<ul class="chips">${a.chips.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}
         ${soon ? `<p class="note" aria-live="polite"></p><div class="row"><button class="go" type="button" data-soon>Ещё в пути</button></div>`
-               : `<div class="row"><a class="go" href="${a.url}" target="_top">Читать <span aria-hidden="true">→</span></a>
-                  <button class="turn" type="button" aria-label="Перевернуть открытку">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></svg>
-                  </button></div>`}
+               : `<div class="row"><a class="go" href="${a.url}" target="_top">Читать <span aria-hidden="true">→</span></a></div>
+                  ${a.extra ? `<div class="extra">${a.extra.map(([t, u]) => `<a href="${u}" target="_top">${esc(t)}</a>`).join('')}</div>` : ''}`}
       </div>
       <div class="shade"></div>
     </div>
-    ${soon ? '' : `<div class="face back" aria-hidden="true">
-      <div class="lines">
-        <div class="msg"><p>${esc(a.sub || '')}</p><p>${esc((a.chips || []).join(', '))}.</p></div>
-        <div class="sep"></div>
-        <div class="addr"><span>Куда: ${esc(a.url.replace('https://', ''))}</span><span>Кому: вам</span></div>
-      </div>
-      ${a.extra ? `<div class="extra">${a.extra.map(([t, u]) => `<a href="${u}" target="_top">${esc(t)}</a>`).join('')}</div>` : ''}
-      <div class="row"><a class="go" href="${a.url}" target="_top" tabindex="-1">Читать <span aria-hidden="true">→</span></a>
-        <button class="turn" type="button" aria-label="Перевернуть обратно" tabindex="-1">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></svg>
-        </button></div>
-    </div>`}
   </article>`;
   deck.appendChild(slot);
   const card = slot.querySelector('.card');
@@ -328,14 +299,14 @@ cards.forEach(c => {
     }
     const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
     down = null; release();
-    if (moved < 10 && !e.target.closest('a,button')) flip(c);
+    if (moved < 10 && !e.target.closest('a,button') && c.soon) sealed(c);
   };
   card.addEventListener('pointerup', up);
   card.addEventListener('pointercancel', () => { down = null; release(); c.slot.style.transform = ''; });
   function tilt(e, k){
     const r = card.getBoundingClientRect();
     const dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
-    const s = card.classList.contains('flipped') ? -1 : 1;
+    const s = 1;
     card.style.setProperty('--ty', (dx * 9 * k * s).toFixed(2) + 'deg');
     card.style.setProperty('--tx', (-dy * 7 * k).toFixed(2) + 'deg');
     card.style.setProperty('--px', (-dx * 10 * k).toFixed(1) + 'px');
@@ -348,32 +319,20 @@ cards.forEach(c => {
     card.classList.remove('dragging');
     ['--ty','--tx','--px','--py'].forEach(p => card.style.removeProperty(p));
   }
-  card.querySelectorAll('.turn').forEach(b => b.addEventListener('click', () => flip(c)));
   card.querySelectorAll('a').forEach(l => l.addEventListener('click', () => markRead(c)));
   const s = card.querySelector('[data-soon]');
-  if (s) s.addEventListener('click', () => flip(c));
+  if (s) s.addEventListener('click', () => sealed(c));
 });
 
-function flip(c){
-  if (c.soon){
-    // сургуч держит: открытка вздрагивает, печать покачивается
-    const seal = c.card.querySelector('.seal'), note = c.card.querySelector('.note');
-    note.textContent = c.a.soonNote; note.classList.add('on');
-    if (!RM){
-      seal.animate([{ '--sr':'-8deg', transform:'rotate(-8deg) scale(1)' }, { transform:'rotate(6deg) scale(1.08)' }, { transform:'rotate(-14deg) scale(.98)' }, { transform:'rotate(-8deg) scale(1)' }], { duration:500, easing:'ease-out' });
-      c.card.animate([{ transform:getComputedStyle(c.card).transform }, { transform:getComputedStyle(c.card).transform + ' translateY(-6px) rotate(-1deg)' }, { transform:getComputedStyle(c.card).transform }], { duration:380, easing:'cubic-bezier(.3,1.6,.5,1)' });
-    }
-    clearTimeout(c.nt); c.nt = setTimeout(() => note.classList.remove('on'), 2800);
-    return;
+function sealed(c){
+  // сургуч держит: открытка вздрагивает, печать покачивается
+  const seal = c.card.querySelector('.seal'), note = c.card.querySelector('.note');
+  note.textContent = c.a.soonNote; note.classList.add('on');
+  if (!RM){
+    seal.animate([{ '--sr':'-8deg', transform:'rotate(-8deg) scale(1)' }, { transform:'rotate(6deg) scale(1.08)' }, { transform:'rotate(-14deg) scale(.98)' }, { transform:'rotate(-8deg) scale(1)' }], { duration:500, easing:'ease-out' });
+    c.card.animate([{ transform:getComputedStyle(c.card).transform }, { transform:getComputedStyle(c.card).transform + ' translateY(-6px) rotate(-1deg)' }, { transform:getComputedStyle(c.card).transform }], { duration:380, easing:'cubic-bezier(.3,1.6,.5,1)' });
   }
-  const on = !c.card.classList.contains('flipped');
-  c.card.classList.toggle('flipped', on);
-  const front = c.card.querySelector('.front'), back = c.card.querySelector('.back');
-  front.setAttribute('aria-hidden', on); back.setAttribute('aria-hidden', !on);
-  front.querySelectorAll('a,button').forEach(x => x.tabIndex = on ? -1 : 0);
-  back.querySelectorAll('a,button').forEach(x => x.tabIndex = on ? 0 : -1);
-  if (on && !store.get('flipped', false)){ store.set('flipped', true); }
-  fit();
+  clearTimeout(c.nt); c.nt = setTimeout(() => note.classList.remove('on'), 2800);
 }
 
 function markRead(c){
@@ -403,7 +362,6 @@ function show(k, opts = {}){
   const dir = opts.dir || (k > cur ? 1 : -1);
   const old = cards[cur], nw = cards[k];
   if (old){
-    old.card.classList.remove('flipped');
     old.slot.classList.remove('cur'); old.slot.classList.add('leaving');
     if (!RM){
       const from = opts.fromX || 0;
