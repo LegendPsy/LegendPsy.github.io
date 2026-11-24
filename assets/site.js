@@ -35,8 +35,17 @@ $$('.acc__btn').forEach(b => {
   });
 });
 
+/* ---------- наверх: появляется, когда ушли дальше первого экрана ---------- */
+const up = document.createElement('button');
+up.className = 'to-top'; up.setAttribute('aria-label', 'Наверх');
+up.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>';
+document.body.appendChild(up);
+up.addEventListener('click', () => scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }));
+const upCheck = () => up.classList.toggle('show', scrollY > innerHeight * .9);
+addEventListener('scroll', upCheck, { passive: true }); upCheck();
+
 /* ---------- кнопки: один отклик для всех ---------- */
-const TAP = '.pill, .menu-btn, .acc__btn, .phrase, .toc a, .viewer .x, .viewer .nav';
+const TAP = '.pill, .menu-btn, .to-top, .acc__btn, .phrase, .toc a, .viewer .x, .viewer .nav';
 function tap(p){
   if (p.dataset.tap) return; p.dataset.tap = 1; p.classList.add('tap');
   const down = e => {
