@@ -345,6 +345,16 @@ function markRead(c){
 
 /* ---------- полоска со статьями и смена открыток ---------- */
 const rail = $('rail'), prevB = $('prev'), nextB = $('next'), count = $('count');
+// колёсико мыши листает полоску со статьями вбок (на компьютере)
+rail.addEventListener('wheel', e => {
+  if (rail.scrollWidth <= rail.clientWidth + 1) return;
+  const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (!d) return;
+  const max = rail.scrollWidth - rail.clientWidth;
+  if ((d < 0 && rail.scrollLeft <= 0) || (d > 0 && rail.scrollLeft >= max - 1)) return; // у края отдаём прокрутку странице
+  e.preventDefault();
+  rail.scrollLeft += d * (e.deltaMode === 1 ? 32 : 1);
+}, { passive:false });
 const pills = cards.map((c, k) => {
   const b = document.createElement('button');
   b.type = 'button'; b.className = 'pill' + (c.soon ? ' soon' : '') + (read.has(c.a.id) ? ' read' : '');
